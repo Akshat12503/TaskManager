@@ -1,0 +1,12 @@
+## .NET Core
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+
+## IDEs
+.vscode/
+.idea/
+*.suo
+*.user
