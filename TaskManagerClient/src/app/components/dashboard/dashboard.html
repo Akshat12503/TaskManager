@@ -1,0 +1,61 @@
+<div class="min-h-screen bg-slate-50">
+  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <div class="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl tracking-wider shadow-sm">TM</div>
+      <h1 class="text-xl font-bold text-slate-800 tracking-tight">Workspace Dashboard</h1>
+    </div>
+    <button (click)="logout()" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors duration-200">
+      Sign Out
+    </button>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm h-fit">
+        <h2 class="text-lg font-bold text-slate-900 mb-4">Create New Task</h2>
+        <form (ngSubmit)="createTask()" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Task Title</label>
+            <input type="text" [(ngModel)]="newTask.title" name="title" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400" placeholder="What needs to be done?">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Description</label>
+            <textarea [(ngModel)]="newTask.description" name="description" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400" placeholder="Add some context details..."></textarea>
+          </div>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md shadow-blue-500/10 hover:shadow-lg transition-all duration-200">
+            Add Task
+          </button>
+        </form>
+      </div>
+
+      <div class="lg:grid-cols-1 lg:col-span-2 space-y-4">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-bold text-slate-900">Your Tasks</h2>
+          <span class="bg-slate-200/60 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-full">{{ tasks.length }} Total</span>
+        </div>
+
+        @if (tasks.length === 0) {
+          <div class="bg-white border border-slate-200 border-dashed p-12 text-center rounded-2xl">
+            <p class="text-slate-400 font-medium">No tasks found. Get started by adding a task on the left panel!</p>
+          </div>
+        }
+
+        <div class="space-y-3">
+          @for (task of tasks; track task.id) {
+            <div class="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex justify-between items-start group">
+              <div class="space-y-1 pr-4">
+                <h3 class="font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">{{ task.title }}</h3>
+                <p class="text-sm text-slate-500 line-clamp-2 leading-relaxed">{{ task.description || 'No description provided.' }}</p>
+              </div>
+              <button (click)="deleteTask(task.id)" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 opacity-0 group-hover:opacity-100 transition-all">
+                Delete
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

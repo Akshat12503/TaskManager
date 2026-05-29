@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Configure CORS
+// 2. Configure CORS (Only registered once to avoid duplicate policy runtime errors)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -48,12 +48,12 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// Removed app.UseHttpsRedirection() since backend is running directly on http://localhost:5053
 
-// Apply CORS Policy
+// 4. Middleware Execution Pipeline
 app.UseCors("AllowAngular");
 
-// Authentication must come BEFORE Authorization
+// Authentication MUST always come before Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
