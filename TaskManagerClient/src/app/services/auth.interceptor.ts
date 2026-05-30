@@ -1,18 +1,32 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
   const token = localStorage.getItem('token');
 
-  // If a token exists, clone the request and inject the Bearer header
+  // Clone the request if a token is present to inject the Authorization header
+  let clonedRequest = req;
   if (token) {
-    const clonedRequest = req.clone({
+    clonedRequest = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
-    return next(clonedRequest);
   }
 
-  // If no token exists (like during registration/login), pass the original request through
-  return next(req);
+  // Pass the request forward and catch any incoming error responses
+  return next(clonedRequest).pipe(
+    catchError((error: HttpErrorResponse) => {
+      // Check if the server rejected the token with a 401 Unauthorized state
+      if (error.status === 401) {
+        console.warn('Session expired or unauthorized. Logging out...');
+        localStorage.removeItem('token'); // Clear the expired token cache
+        router.navigate(['/login']); // Kick the user back to the login screen
+      }
+      return throwError(() => error);
+    })
+  );
 };
