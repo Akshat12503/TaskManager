@@ -12,6 +12,14 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm mb-8 max-w-xl">
       <h2 class="text-base font-bold text-slate-900 mb-3">Create New Task</h2>
+      
+      @if (errorMessage) {
+        <div class="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl flex items-center space-x-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
+
       <form (ngSubmit)="createTask()" class="flex flex-col sm:flex-row gap-3">
         <input type="text" [(ngModel)]="newTask.title" name="title" required class="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm placeholder:text-slate-400" placeholder="Task name...">
         <input type="text" [(ngModel)]="newTask.description" name="description" class="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm placeholder:text-slate-400" placeholder="Description...">

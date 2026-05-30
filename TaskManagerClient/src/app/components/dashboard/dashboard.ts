@@ -12,6 +12,7 @@ import { TaskService } from '../../services/task';
 })
 export class DashboardComponent implements OnInit {
   tasks: any[] = [];
+  errorMessage: string | null = null;
   newTask = { title: '', description: '', stage: 'Todo' };
 
   constructor(private taskService: TaskService, private router: Router) {}
@@ -28,24 +29,29 @@ export class DashboardComponent implements OnInit {
   }
 
   createTask(): void {
-    if (!this.newTask.title.trim()) return;
+    // 1. Frontend validation check to stop empty submissions
+    if (!this.newTask.title.trim()) {
+      this.showError('Task title cannot be empty!');
+      return;
+    }
 
-    // Default new tasks to the "Todo" stage
     const taskToSend = { ...this.newTask, stage: 'Todo' };
 
     this.taskService.createTask(taskToSend).subscribe({
       next: () => {
         this.newTask = { title: '', description: '', stage: 'Todo' };
+        this.errorMessage = null; // Clear any existing errors on success
         this.loadTasks();
       },
-      error: (err) => console.error('Failed to create task', err)
+      error: (err) => {
+        console.error('Failed to create task', err);
+        this.showError('Server communication failed. Please try again.');
+      }
     });
   }
 
-  // New method to advance or change a task's stage column
   updateTaskStage(task: any, newStage: string): void {
     const updatedTask = { ...task, stage: newStage };
-    // Pass both the task ID and the updated payload object
     this.taskService.updateTask(task.id, updatedTask).subscribe({
       next: () => this.loadTasks(),
       error: (err) => console.error('Failed to update task stage', err)
@@ -57,6 +63,16 @@ export class DashboardComponent implements OnInit {
       next: () => this.loadTasks(),
       error: (err) => console.error('Failed to delete task', err)
     });
+  }
+
+  // Helper method to show and automatically hide error notifications after 4 seconds
+  showError(message: string): void {
+    this.errorMessage = message;
+    setTimeout(() => {
+      if (this.errorMessage === message) {
+        this.errorMessage = null;
+      }
+    }, 4000);
   }
 
   logout(): void {
