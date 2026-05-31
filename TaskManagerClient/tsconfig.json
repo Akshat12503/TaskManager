@@ -3,17 +3,13 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "types": [],
-    "strict": false,
-    "noImplicitAny": false
-  },
-  "angularCompilerOptions": {
-    "strictTemplates": false,
-    "strictInjectionParameters": false
+    "strict": false
   },
   "files": [
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/**/*.ts"
   ]
 }
